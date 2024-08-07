@@ -29,9 +29,11 @@ class OPCode(enum.IntEnum):
     LOR = enum.auto()
     LNOT = enum.auto()
     EQU = enum.auto()
+    NEQU = enum.auto()
 
     # Functional
     CALL = enum.auto()
+    ACALL = enum.auto()
     RET = enum.auto()
 
     # Conditional

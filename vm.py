@@ -1,11 +1,10 @@
 from operand import OPCode
-from stack import Stack
-
 
 class VM(object):
     def __init__(self, instructions: list[tuple], debug = False):
         self.instructions = instructions
-        self.stack = Stack()
+        self.stack = []
+        self.call_stack = []
         self.ip = 0
         self._is_running = False
         self.debug = debug
@@ -27,7 +26,9 @@ class VM(object):
             OPCode.LOR:      self.l_or,
             OPCode.LNOT:     self.l_not,
             OPCode.EQU:      self.equ,
+            OPCode.NEQU:     self.nequ,
             OPCode.CALL:     self.call,
+            OPCode.ACALL:    self.acall,
             OPCode.RET:      self.ret,
             OPCode.JMP:      self.jmp,
             OPCode.JNZ:      self.jnz,
@@ -45,9 +46,10 @@ class VM(object):
             except IndexError:
                 print("Unknown Instruction pointer, halting.")
                 self.halt()
+                break
 
             self.trace('Current stack:', self.stack)
-            self.trace(f'Running instruction {op.name}')
+            self.trace(f'Running instruction {op.name} | ip: {self.ip}')
 
             if op not in self.instruction_handlers:
                 assert False, "Support for operand {} doesn't exist".format(op.name)
@@ -61,7 +63,7 @@ class VM(object):
         Pushes a value to the stack
         '''
         val = self.instructions[self.ip][1]
-        self.stack.push(val)
+        self.stack.append(val)
 
     def pop(self):
         '''
@@ -73,15 +75,15 @@ class VM(object):
         '''
         Duplicates the top of the stack.
         '''
-        self.stack.push(self.stack.top())
+        self.stack.append(self.stack[-1])
 
     def swp(self):
         '''
         Swaps the first 2 popped values.
         '''
         a, b = (self.stack.pop(), self.stack.pop())
-        self.stack.push(a)
-        self.stack.push(b)
+        self.stack.append(a)
+        self.stack.append(b)
 
     def add(self):
         '''
@@ -135,7 +137,7 @@ class VM(object):
         '''
         Performs a NOT operation on the 2 popped values.
         '''
-        self.push(~self.pop())
+        self.stack[-1] = ~self.stack[-1]
 
     def l_and(self):
         '''
@@ -161,26 +163,35 @@ class VM(object):
         '''
         self.exec(lambda a,b: 1 if a == b else 0)
 
+    def nequ(self):
+        '''
+        Performs a not-equal operation.
+        '''
+        self.exec(lambda a,b: 1 if a != b else 0)
+
     def call(self):
         '''
         A call instruction pushes the current ip to the stack, and jumps to the given ip.
         '''
-        target_ip = self.instructions[self.ip][1]
-        self.stack.push(target_ip)
+        self.call_stack.append(self.ip)
         self.jmp()
+
+    def acall(self):
+        self.call_stack.append(self.ip)
+        self.ip = self.instructions[self.ip][1] - 1
 
     def ret(self):
         '''
         A ret instruction takes the top, that should be the ip that was pushed by the call instruction
         '''
-        self.ip = self.stack.pop()
+        self.ip = self.call_stack.pop()
 
     def jmp(self):
         '''
         Jumps to new instruction pointer.
         '''
         new_ip = self.instructions[self.ip][1]
-        self.ip = new_ip
+        self.ip += new_ip - 1 # used to make the provided instruction pointer more readable
 
     def jnz(self):
         '''
@@ -199,7 +210,7 @@ class VM(object):
         '''
         Executes a lambda function on 2 first values.
         '''
-        self.stack.push(fn(self.stack.pop(), self.stack.pop()))
+        self.stack.append(fn(self.stack.pop(), self.stack.pop()))
 
     def trace(self, *args):
         if self.debug:
