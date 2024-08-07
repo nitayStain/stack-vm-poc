@@ -14,6 +14,12 @@ class Stack(object):
         (A stack is FIFO, first in first out)
         """
         return self._stack.pop()
-    
+
+    def top(self):
+        """
+        A function that returns the top value of the stack without popping it.
+        """
+        return self._stack[-1]
+
     def __repr__(self) -> str:
         return str(self._stack)

@@ -8,21 +8,33 @@ class OPCode(enum.IntEnum):
     """
     PUSH = enum.auto()
     POP = enum.auto()
+    DUP = enum.auto()
+    SWP = enum.auto()
 
     # Arithematic
     ADD = enum.auto()
     SUB = enum.auto()
     MUL = enum.auto()
     DIV = enum.auto()
+    MOD = enum.auto()
 
     # Binary
-    AND = enum.auto()
-    OR = enum.auto()
-    NOT = enum.auto()
-    XOR = enum.auto()
+    BAND = enum.auto()
+    BOR = enum.auto()
+    BNOT = enum.auto()
+    BXOR = enum.auto()
+
+    # Logical
+    LAND = enum.auto()
+    LOR = enum.auto()
+    LNOT = enum.auto()
+    EQU = enum.auto()
+
+    # Functional
+    CALL = enum.auto()
+    RET = enum.auto()
 
     # Conditional
-    EQU = enum.auto()
     JMP = enum.auto()
     JNZ = enum.auto()
 
