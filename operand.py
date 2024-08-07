@@ -20,7 +20,7 @@ class OPCode(enum.IntEnum):
     OR = enum.auto()
     NOT = enum.auto()
     XOR = enum.auto()
-    
+
     # Conditional
     EQU = enum.auto()
     JMP = enum.auto()

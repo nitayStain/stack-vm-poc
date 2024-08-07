@@ -1,11 +1,14 @@
 from vm import VM, OPCode
 
-PROGRAM = [
+DEMO = [
     (OPCode.PUSH, 1),
     (OPCode.PUSH, 40),
     (OPCode.EQU,),
-    # (OPCode.OUT_STACK,),
+    (OPCode.JNZ, 4),
+    (OPCode.PUSH, 80),
+    (OPCode.PUSH, 120),
+    (OPCode.ADD,),
     (OPCode.HALT,),
 ]
 
-VM(PROGRAM).interpret()
+VM(DEMO, True).interpret()

@@ -3,26 +3,28 @@ from stack import Stack
 
 
 class VM(object):
-    def __init__(self, instructions: list[tuple]):
+    def __init__(self, instructions: list[tuple], debug = False):
         self.instructions = instructions
         self.stack = Stack()
         self.ip = 0
         self._is_running = False
+        self.debug = debug
+
         self.instruction_handlers = {
-            OPCode.PUSH: self.push,
-            OPCode.POP: self.pop,
-            OPCode.ADD: self.add,
-            OPCode.SUB: self.sub,
-            OPCode.MUL: self.mul,
-            OPCode.DIV: self.div,
-            OPCode.AND: self.and_,
-            OPCode.OR: self.or_,
-            OPCode.XOR: self.xor_,
-            OPCode.NOT: self.not_,
-            OPCode.EQU: self.equ,
-            OPCode.JMP: self.jmp,
-            OPCode.JNZ: self.jnz,
-            OPCode.HALT: self.halt
+            OPCode.PUSH:    self.push,
+            OPCode.POP:     self.pop,
+            OPCode.ADD:     self.add,
+            OPCode.SUB:     self.sub,
+            OPCode.MUL:     self.mul,
+            OPCode.DIV:     self.div,
+            OPCode.AND:     self.and_,
+            OPCode.OR:      self.or_,
+            OPCode.XOR:     self.xor_,
+            OPCode.NOT:     self.not_,
+            OPCode.EQU:     self.equ,
+            OPCode.JMP:     self.jmp,
+            OPCode.JNZ:     self.jnz,
+            OPCode.HALT:    self.halt
         }
 
     def interpret(self):
@@ -36,6 +38,9 @@ class VM(object):
             except IndexError:
                 print("Unknown Instruction pointer, halting.")
                 self.halt()
+
+            self.trace(f'Running instruction {op.name}')
+            self.trace('Current stack:', self.stack)
 
             if op not in self.instruction_handlers:
                 assert False, "Support for operand {} doesn't exist".format(op.name)
@@ -83,7 +88,7 @@ class VM(object):
 
     def and_(self):
         self.exec(lambda a, b: a & b)
-    
+
     def or_(self):
         self.exec(lambda a,b: a | b)
 
@@ -124,3 +129,7 @@ class VM(object):
         Executes a lambda function on 2 first values.
         '''
         self.stack.push(fn(self.stack.pop(), self.stack.pop()))
+
+    def trace(self, *args):
+        if self.debug:
+            print("[INFO]: ", *args)
