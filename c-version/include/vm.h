@@ -38,19 +38,19 @@ void vm_interpret(vm_t *vm, instructions_t program);
 
 void vm_push(vm_t *vm);
 int vm_pop(vm_t *vm);
-void vm_add(int a, int b);
-void vm_sub(int a, int b);
-void vm_mul(int a, int b);
-void vm_div(int a, int b);
-void vm_mod(int a, int b);
+int vm_add(int a, int b);
+int vm_sub(int a, int b);
+int vm_mul(int a, int b);
+int vm_div(int a, int b);
+int vm_mod(int a, int b);
 
-void vm_b_and(int a, int b);
-void vm_b_or(int a, int b);
-void vm_b_xor(int a, int b);
+int vm_b_and(int a, int b);
+int vm_b_or(int a, int b);
+int vm_b_xor(int a, int b);
 void vm_b_not(vm_t *vm);
 
-void vm_equ(int a, int b);
-void vm_nequ(int a, int b);
+int vm_equ(int a, int b);
+int vm_nequ(int a, int b);
 void vm_call(vm_t *vm);
 void vm_ret(vm_t *vm);
 void vm_jmp(vm_t *vm);

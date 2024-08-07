@@ -14,7 +14,7 @@ const struct instruction_t FIB[] = {
     {.op = JNZ, .param = 2},
     {.op = RET},
 
-    // NOT_ZERO
+    // // NOT_ZERO
     {.op = DUP},
     {.op = PUSH, .param = 1},
     {.op = NEQU},
@@ -32,12 +32,6 @@ const struct instruction_t FIB[] = {
     {.op = ACALL, .param = 3},
     {.op = ADD},
     {.op = RET}};
-
-const struct instruction_t SIMPLE_PROG[] = {
-    {.op = PUSH, .param = 20},
-    {.op = DUP},
-    // {.op = POP, .param = 100},
-    {.op = HALT}};
 
 int main(void)
 {

@@ -24,16 +24,15 @@ void vm_interpret(vm_t *vm, instructions_t program)
     {
         if (vm->ip < 0 || vm->program[vm->ip].op >= OP_COUNT)
         {
-            printf("Unknown instruction pointer, halting.\n");
             vm_halt(vm);
             continue;
         }
 
         printf("Current stack: ");
         s_print(vm->main_stack);
-        printf("Running instruction, ip %d\n", vm->ip);
 
         opcode op = vm->program[vm->ip].op;
+        printf("Running instruction, ip %d | %d | %d\n", vm->ip, op, vm->program[vm->ip].param);
         switch (op)
         {
         case PUSH:
@@ -134,42 +133,42 @@ void vm_swp(vm_t *vm)
     s_push(&vm->main_stack, b);
 }
 
-void vm_add(int a, int b)
+int vm_add(int a, int b)
 {
     return a + b;
 }
 
-void vm_sub(int a, int b)
+int vm_sub(int a, int b)
 {
     return b - a;
 }
 
-void vm_mul(int a, int b)
+int vm_mul(int a, int b)
 {
     return a * b;
 }
 
-void vm_div(int a, int b)
+int vm_div(int a, int b)
 {
     return b / a;
 }
 
-void vm_mod(int a, int b)
+int vm_mod(int a, int b)
 {
     return b % a;
 }
 
-void vm_b_and(int a, int b)
+int vm_b_and(int a, int b)
 {
     return a & b;
 }
 
-void vm_b_or(int a, int b)
+int vm_b_or(int a, int b)
 {
     return a | b;
 }
 
-void vm_b_xor(int a, int b)
+int vm_b_xor(int a, int b)
 {
     return a ^ b;
 }
@@ -179,24 +178,24 @@ void vm_b_not(vm_t *vm)
     s_push(&vm->main_stack, ~(s_pop(&vm->main_stack)));
 }
 
-void vm_l_and(int a, int b)
+int vm_l_and(int a, int b)
 {
     return (bool)a && (bool)b;
 }
 
-void vm_l_or(int a, int b)
+int vm_l_or(int a, int b)
 {
     return (bool)a || (bool)b;
 }
 
 // Note: add rest of logical stuff
 
-void vm_equ(int a, int b)
+int vm_equ(int a, int b)
 {
     return a == b;
 }
 
-void vm_nequ(int a, int b)
+int vm_nequ(int a, int b)
 {
     return a != b;
 }
@@ -241,10 +240,11 @@ void vm_halt(vm_t *vm)
 
 void vm_exec(vm_t *vm, fn_t fn)
 {
-    stack_t **stack = vm->main_stack;
-    if (*stack == NULL || (*stack)->next == NULL)
+    if (vm->main_stack == NULL || vm->main_stack->next == NULL)
         return;
-    s_push(stack, (int)fn(s_pop(stack), s_pop(stack)));
+    int a = s_pop(&vm->main_stack);
+    int b = s_pop(&vm->main_stack);
+    s_push(&vm->main_stack, fn(a, b));
 }
 
 void vm_free(vm_t *vm)
