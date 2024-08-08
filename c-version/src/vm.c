@@ -28,11 +28,7 @@ void vm_interpret(vm_t *vm, instructions_t program)
             continue;
         }
 
-        printf("Current stack: ");
-        s_print(vm->main_stack);
-
         opcode op = vm->program[vm->ip].op;
-        printf("Running instruction, ip %d | %d | %d\n", vm->ip, op, vm->program[vm->ip].param);
         switch (op)
         {
         case PUSH:

@@ -1,4 +1,5 @@
 from operand import OPCode
+import time
 
 class VM(object):
     def __init__(self, instructions: list[tuple], debug = False):
@@ -10,29 +11,31 @@ class VM(object):
         self.debug = debug
 
         self.instruction_handlers = {
-            OPCode.PUSH:     self.push,
-            OPCode.POP:      self.pop,
-            OPCode.DUP:      self.dup,
-            OPCode.SWP:      self.swp,
-            OPCode.ADD:      self.add,
-            OPCode.SUB:      self.sub,
-            OPCode.MUL:      self.mul,
-            OPCode.DIV:      self.div,
-            OPCode.BAND:     self.b_and,
-            OPCode.BOR:      self.b_or,
-            OPCode.BXOR:     self.b_xor,
-            OPCode.BNOT:     self.b_not,
-            OPCode.LAND:     self.l_and,
-            OPCode.LOR:      self.l_or,
-            OPCode.LNOT:     self.l_not,
-            OPCode.EQU:      self.equ,
-            OPCode.NEQU:     self.nequ,
-            OPCode.CALL:     self.call,
-            OPCode.ACALL:    self.acall,
-            OPCode.RET:      self.ret,
-            OPCode.JMP:      self.jmp,
-            OPCode.JNZ:      self.jnz,
-            OPCode.HALT:     self.halt
+            OPCode.PUSH:        self.push,
+            OPCode.POP:         self.pop,
+            OPCode.DUP:         self.dup,
+            OPCode.SWP:         self.swp,
+            OPCode.ROT:         self.rot,
+            OPCode.ADD:         self.add,
+            OPCode.SUB:         self.sub,
+            OPCode.MUL:         self.mul,
+            OPCode.DIV:         self.div,
+            OPCode.BAND:        self.b_and,
+            OPCode.BOR:         self.b_or,
+            OPCode.BXOR:        self.b_xor,
+            OPCode.BNOT:        self.b_not,
+            OPCode.LAND:        self.l_and,
+            OPCode.LOR:         self.l_or,
+            OPCode.LNOT:        self.l_not,
+            OPCode.EQU:         self.equ,
+            OPCode.NEQU:        self.nequ,
+            OPCode.CALL:        self.call,
+            OPCode.ACALL:       self.acall,
+            OPCode.RET:         self.ret,
+            OPCode.JMP:         self.jmp,
+            OPCode.JNZ:         self.jnz,
+            OPCode.OUT_STACK:   lambda: print(self.stack),
+            OPCode.HALT:        self.halt
         }
 
     def interpret(self):
@@ -84,6 +87,12 @@ class VM(object):
         a, b = (self.stack.pop(), self.stack.pop())
         self.stack.append(a)
         self.stack.append(b)
+
+    def rot(self):
+        '''
+        Swaps the given index to the top of the stack
+        '''
+        self.stack.append(self.stack.pop(-self.stack.pop()))
 
     def add(self):
         '''

@@ -1,7 +1,5 @@
 import enum
 
-# OPCode = enum.IntEnum('OPCode', 'PUSH POP ADD SUB HALT TEST OUT_STACK')
-
 class OPCode(enum.IntEnum):
     """
     VM's Operand registry
@@ -10,6 +8,7 @@ class OPCode(enum.IntEnum):
     POP = enum.auto()
     DUP = enum.auto()
     SWP = enum.auto()
+    ROT = enum.auto()
 
     # Arithematic
     ADD = enum.auto()

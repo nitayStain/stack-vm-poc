@@ -38,4 +38,4 @@ DEMO = [
     *FIB,
 ]
 
-VM(DEMO, True).interpret()
+VM(DEMO, False).interpret()
